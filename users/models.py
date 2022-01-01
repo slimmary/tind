@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import datetime
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 class UserProfile(models.Model):
@@ -40,8 +42,14 @@ class UserProfile(models.Model):
                              help_text='Enter short text about yourself',
                              )
 
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance, birthday=datetime.today())
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
     def __str__(self):
-        return '{}:  {} {} years, prefers - {}'.format(self.name, self.gender[0], self.age, self.sex_orientation)
-
-
-
+        return '{}:  {} {} years, prefers - {}'.format(self.name, self.gender, self.age, self.sex_orientation)

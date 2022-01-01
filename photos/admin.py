@@ -9,7 +9,7 @@ class PhotoAdmin(admin.ModelAdmin):
     readonly_fields = ('image_tag',)
 
     def image_tag(self, obj):
-        return mark_safe('<img src="{}" / width="150", height="150">'.format(obj.image.url))
+        return mark_safe('<img src="{}" / width="120", height="150">'.format(obj.image.url))
 
     image_tag.short_description = 'Image'
     image_tag.allow_tags = True
